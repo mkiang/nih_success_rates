@@ -286,25 +286,3 @@ plot_circles <- function(k_awards_df,
     
     p3
 }
-
-
-
-
-
-x1 <- k_awards %>%
-    group_by(year, k_type) %>%
-    summarize(total_funding = sum(total_funding) / 1000000,
-              total_awards = sum(apps_awarded))
-p1 <- ggplot(x1, 
-             aes(x = year, y = total_awards), 
-             clip = "off") +
-    geom_line() +
-    geom_point(size = 3.5, color = "white") +
-    geom_point() +
-    scale_x_continuous(NULL,
-                       breaks = seq(2008, 2017, 3),
-                       expand = c(0, .1)) +
-    scale_y_continuous("Total NIH Funding for K-awards (millions of dollars)",
-                       expand = c(0, .25)) +
-    mk_nytimes()
-

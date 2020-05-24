@@ -31,7 +31,7 @@ k_awards <- readxl::read_xlsx(
 ## Recalculate success rate and fix some institute names
 k_awards <- k_awards %>%
     mutate(
-        success_rate = apps_awarded / apps_received,
+        success_rate = apps_awarded / apps_received * 100,
         institute = gsub("*", "", institute, fixed = TRUE),
         institute = gsub("NCMHD", "NIMHD", institute, fixed = TRUE),
         institute = gsub("NCCAM", "NCCIH", institute, fixed = TRUE)
