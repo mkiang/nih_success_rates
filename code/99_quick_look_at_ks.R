@@ -7,7 +7,7 @@ source("./code/mk_nytimes.R")
 ## Constants ----
 ## Get link to correct file: https://report.nih.gov/success_rates/
 T204_URL <- "https://report.nih.gov/DisplayRePORT.aspx?rid=551"
-SAVE_FILE <- "./data/raw_k_success_file.xlsx"
+SAVE_FILE <- "./data/T204 2019 CAREER DEV_Appls_Awds_Succ Rate_Fund by Act and IC_1.xlsx"
 
 ## Get data ----
 if (!file.exists(SAVE_FILE)) {
