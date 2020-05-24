@@ -10,10 +10,6 @@
 library(shiny)
 library(tidyverse)
 library(here)
-source(here("code", "utils.R"))
-source(here("code", "mk_nytimes.R"))
-
-k_awards <- readRDS(here("data", "working_data.RDS"))
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -57,6 +53,10 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+    k_awards <- readRDS(here("data", "working_data.RDS"))
+    source(here("code", "utils.R"))
+    source(here("code", "mk_nytimes.R"))
+    
     output$k_success <- renderCachedPlot({
         plot_apps_and_success(k_awards,
                               k_types = input$k_awards,
