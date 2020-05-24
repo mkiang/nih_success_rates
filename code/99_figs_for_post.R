@@ -29,7 +29,7 @@ ggsave(
 )
 
 ggsave(
-    here("plots", "blogfig1_success_over_time.jpg"),
+    here("plots", "blogfig1_success_over_time.png"),
     p1,
     width = 6,
     height = 3,
@@ -38,7 +38,7 @@ ggsave(
 )
 
 ggsave(
-    here("plots", "blogfig2_k99_variation.jpg"),
+    here("plots", "blogfig2_k99_variation.png"),
     p2,
     width = 6,
     height = 3.5,
