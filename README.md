@@ -12,12 +12,13 @@ data](https://report.nih.gov/success_rates/) for early career awards
 This was started fairly quickly over a lunch break — it almost certainly
 has errors.
 
-## Future plans
+## Shiny app
 
-None for now but as I get more serious about applying, I might
-eventually turn this into a Shiny app and do more thorough analyses.
-You’re welcome to fork and do this if you’re
-interested.
+I’ve made a very crude Shiny app. To run it, use the following command
+*on your local RStudio
+instance*:
+
+    shiny::runGitHub("mkiang/k_success_rates")
 
 # Plots
 
