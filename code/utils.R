@@ -229,7 +229,7 @@ plot_circles <- function(k_awards_df,
     } 
     
     p3 <- ggplot(
-        k_awards %>%
+        k_awards_df %>%
             filter(k_type == k_type_x),
         aes(
             x = year,
@@ -268,7 +268,7 @@ plot_circles <- function(k_awards_df,
     if (!is.na(highlight_institute)) {
         p3 <- p3 +
             geom_point(
-                data =   k_awards %>%
+                data =   k_awards_df %>%
                     filter(k_type == k_type_x,
                            institute == highlight_institute),
                 aes(
