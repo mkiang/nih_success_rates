@@ -34,7 +34,7 @@ ggsave(
     width = 6,
     height = 3,
     scale = 1.2,
-    dpi = 150
+    dpi = 300
 )
 
 ggsave(
@@ -43,5 +43,5 @@ ggsave(
     width = 6,
     height = 3.5,
     scale = 1.2,
-    dpi = 150
+    dpi = 300
 )
