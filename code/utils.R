@@ -5,6 +5,13 @@ library(shiny)
 library(patchwork)
 library(ggrepel)
 
+initial_sub_only <-
+    function(name_x = "first_sub",
+             label_x = "Initial submissions only",
+             value_x = FALSE) {
+        checkboxInput(name_x, label_x, value_x)
+    }
+
 institute_selector <- function(name_x, label_x, selected_x = "All") {
     selectInput(
         inputId = name_x,
@@ -102,7 +109,8 @@ award_selector <- function(name_x = "k_award",
 plot_apps_and_success <- function(
     k_awards_df,
     k_types = c("K01", "K08", "K23", "K99"),
-    ics = "All"
+    ics = "All",
+    first_sub = FALSE
     ) {
     sub_df <- k_awards_df %>%
         ungroup()
@@ -118,9 +126,11 @@ plot_apps_and_success <- function(
         summarize(
             apps_received = sum(apps_received),
             apps_awarded = sum(apps_awarded),
-            total_funding = sum(total_funding)
+            total_funding = sum(total_funding),
+            app_first_sub = sum(app_first_sub, na.rm = TRUE),
         ) %>%
-        mutate(success_rate = apps_awarded / apps_received * 100) %>%
+        mutate(success_rate = apps_awarded / apps_received * 100,
+               success_rate_first = app_first_sub / apps_received * 100) %>%
         filter(k_type %in% k_types)
     
     p1 <- ggplot(x,
@@ -153,35 +163,35 @@ plot_apps_and_success <- function(
             show.legend = FALSE
         )
     
-    # p2 <- ggplot(x,
-    #              aes(x = year, y = apps_awarded, color = k_type),
-    #              clip = "off") +
-    #     geom_line(size = .8, alpha = .9) +
-    #     geom_point(size = 3.5, color = "white") +
-    #     geom_point() +
-    #     scale_colour_brewer("K-type", palette = "Dark2") +
-    #     scale_x_continuous(
-    #         NULL,
-    #         breaks = seq(2010, 2019, 3),
-    #         expand = c(0, .1),
-    #         limits = c(2010, 2019.6)
-    #     ) +
-    #     scale_y_continuous("Applications awarded (N)",
-    #                        expand = c(0, 20)) +
-    #     mk_nytimes(legend.position = "none") +
-    #     geom_text_repel(
-    #         data = x %>%
-    #             group_by(k_type) %>% 
-    #             filter(year == max(year)),
-    #         aes(
-    #             x = year,
-    #             y = apps_received,
-    #             label = k_type,
-    #             color = k_type
-    #         ),
-    #         nudge_x = .2,
-    #         show.legend = FALSE
-    #     )
+    p2 <- ggplot(x,
+                 aes(x = year, y = success_rate_first, color = k_type),
+                 clip = "off") +
+        geom_line(size = .8, alpha = .9) +
+        geom_point(size = 3.5, color = "white") +
+        geom_point() +
+        scale_colour_brewer("K-type", palette = "Dark2") +
+        scale_x_continuous(
+            NULL,
+            breaks = seq(2010, 2019, 3),
+            expand = c(0, .1),
+            limits = c(2010, 2019.6)
+        ) +
+        scale_y_continuous("Success rate among initial submissions (%)",
+                           expand = c(0, .1)) +
+        mk_nytimes(legend.position = "none") +
+        geom_text_repel(
+            data = x %>%
+                group_by(k_type) %>% 
+                filter(year == max(year)),
+            aes(
+                x = year,
+                y = success_rate_first,
+                label = k_type,
+                color = k_type
+            ),
+            nudge_x = .2,
+            show.legend = FALSE
+        )
     
     p3 <- ggplot(x,
                  aes(x = year, y = success_rate, color = k_type),
@@ -212,14 +222,19 @@ plot_apps_and_success <- function(
             show.legend = FALSE
         )
     
-    # p1 + p2 + p3 + plot_layout(ncol = 3)
-    p1 + p3 + plot_layout(ncol = 2)
+    if (first_sub) {
+        p1 + p3 + p2 + plot_layout(ncol = 3)
+    } else {
+        p1 + p3 + plot_layout(ncol = 2)
+    }
 }
+
 
 plot_circles <- function(k_awards_df,
                          k_type_x = "K99",
                          highlight_institute = NA,
-                         add_loess = TRUE) {
+                         add_loess = TRUE,
+                         first_sub = FALSE) {
     circle_alpha <- 1
     circle_stroke <- .9
     
@@ -228,17 +243,30 @@ plot_circles <- function(k_awards_df,
         circle_stroke <- .75
     } 
     
+    if (first_sub) {
+        y_label <- "Success rates among initial submissions (%)"
+        k_awards_df <- k_awards_df %>% 
+            rename(y_target = success_rate_first)
+        
+    } else {
+        y_label <- "Success rates (%)"
+        k_awards_df <- k_awards_df %>% 
+            rename(y_target = success_rate)
+    }
+    
     p3 <- ggplot(
         k_awards_df %>%
             filter(k_type == k_type_x),
         aes(
             x = year,
-            y = success_rate,
+            y = y_target,
             size = apps_received,
             weight = apps_received
         ),
         clip = "off"
-    ) +
+    ) 
+    
+    p3 <- p3 +
         geom_point(alpha = circle_alpha, 
                    shape = 1,
                    stroke = circle_stroke) +
@@ -257,7 +285,7 @@ plot_circles <- function(k_awards_df,
             breaks = c(0, 10, 50, 100, 150),
             max_size = 9
         ) +
-        scale_y_continuous("Success rates (%)", expand = c(0, .01)) +
+        scale_y_continuous(y_label, expand = c(0, .01)) +
         mk_nytimes(legend.position = "bottom")
     
     if (add_loess) {
@@ -273,7 +301,7 @@ plot_circles <- function(k_awards_df,
                            institute == highlight_institute),
                 aes(
                     x = year,
-                    y = success_rate,
+                    y = y_target,
                     size = apps_received
                 ),
                 alpha = .9,

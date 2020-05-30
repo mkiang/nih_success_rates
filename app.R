@@ -13,6 +13,23 @@ library(here)
 source(here("code", "utils.R"))
 source(here("code", "mk_nytimes.R"))
 k_df <- readRDS(here("data", "working_data.RDS"))
+first_sub <- read_csv(here("data", "first_submissions_all.csv")) %>% 
+    select(year = fy, 
+           k_type = activity,
+           app_first_sub = n_first_sub,
+           institute)
+
+first_sub <- bind_rows(
+    first_sub,
+    first_sub %>% 
+        group_by(year, k_type) %>% 
+        summarize(app_first_sub = sum(app_first_sub)) %>%
+        mutate(institute = "All")
+)
+
+k_df <- k_df %>% 
+    left_join(first_sub) %>% 
+    mutate(success_rate_first = app_first_sub / apps_received * 100)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -24,7 +41,8 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             award_selectize(name_x = "k_awards", label_x = "Award Mechanism\n(four max):"),
-            institute_selector(name_x = "fig1ic", label_x = "Institute/Center:")
+            institute_selector(name_x = "fig1ic", label_x = "Institute/Center:"),
+            initial_sub_only(name_x = "first_sub1", label_x = "Plot initial submissions:")
         ),
 
         # Show a plot of the generated distribution
@@ -44,7 +62,8 @@ ui <- fluidPage(
                 name_x = "fig2ic",
                 label_x = "Institute/Center:",
                 selected_x = "NIDA"
-            )
+            ),
+            initial_sub_only(name_x = "first_sub2")
         ), 
         
         # Show a plot of the generated distribution
@@ -60,14 +79,16 @@ server <- function(input, output) {
     output$k_success <- renderCachedPlot({
         plot_apps_and_success(k_df,
                               k_types = input$k_awards,
-                              ics = input$fig1ic)
-    }, cacheKeyExpr = list(input$k_awards, input$fig1ic))
+                              ics = input$fig1ic,
+                              first_sub = input$first_sub1)
+    }, cacheKeyExpr = list(input$k_awards, input$fig1ic, input$first_sub1))
     
     output$k_circles <- renderCachedPlot({
         plot_circles(k_df,
                      k_type_x = input$k_award,
-                     highlight_institute = input$fig2ic)
-    }, cacheKeyExpr = list(input$k_award, input$fig2ic))
+                     highlight_institute = input$fig2ic,
+                     first_sub = input$first_sub2)
+    }, cacheKeyExpr = list(input$k_award, input$fig2ic, input$first_sub2))
 }
 
 # Run the application 
