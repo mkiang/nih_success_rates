@@ -23,10 +23,10 @@ k_awards <- k_awards %>%
     mutate(success_rate_first = app_first_sub / apps_received * 100)
 
 p1 <- plot_apps_and_success(k_awards,
-                            k_types = c("K01", "K08", "K23", "K99"),
+                            activity_codes = c("K01", "K08", "R01", "K99"),
                             ics = "All")
 p1b <- plot_apps_and_success(k_awards,
-                            k_types = c("K01", "K08", "K23", "K99"),
+                            activity_codes = c("K01", "K08", "R01", "K99"),
                             ics = "All", first_sub = TRUE)
 p2 <- plot_circles(k_awards, "K99", "NIDA")
 

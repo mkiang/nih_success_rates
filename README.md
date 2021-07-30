@@ -1,11 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# k\_success\_rates
+# `nih_success_rates`
 
 Some quick exploratory looks at the [NIH Success Rates
 data](https://report.nih.gov/success_rates/) for early career awards
-(i.e,. “K-awards”).
+(i.e,. “K-awards”) and major independent awards (e.g., R01, DP2, etc.)
 
 ## Warning
 
@@ -15,29 +15,6 @@ has errors.
 ## Shiny app
 
 I’ve made a very crude Shiny app. To run it, use the following command
-*on your local RStudio
-instance*:
+*on your local RStudio instance*:
 
-    shiny::runGitHub("mkiang/k_success_rates")
-
-# Plots
-
-## How much has the NIH awarded in early career grants over time?
-
-![](./plots/overall_funding.png)
-
-## How much has been awarded by institute / center over time?
-
-![](./plots/overall_funding_by_institute.png)
-
-## How much has been awarded by all those things *and* funding mechanism?
-
-![](./plots/awards_by_type_institute.png)
-
-## How many applicants and what is the success rate for K-awards?
-
-![](./plots/successrates_by_type_institute.png)
-
-## But can you use `gganimate`?
-
-![](./plots/animated_awards.gif)
+    shiny::runGitHub("mkiang/nih_success_rates")
