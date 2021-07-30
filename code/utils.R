@@ -19,6 +19,9 @@ institute_selector <- function(name_x, label_x, selected_x = "All") {
         selected = selected_x,
         choices = list(
             "All NIH Institutes and Centers" = "All",
+            "Fogarty Iternational Center (FIC)" = "FIC", 
+            "National Center for Advancing Translational Sciences (NCATS)" = "NCATS", 
+            "National Center for Complementary and Integrative Health (NCCIH)", "NCCIH", 
             "National Cancer Institute (NCI)" = "NCI",
             #  "National Center for Research Resources" = "NCRR",
             "National Eye Institute (NEI)" = "NEI",
@@ -40,7 +43,8 @@ institute_selector <- function(name_x, label_x, selected_x = "All") {
             "National Institute on\n   Minority Health and Health Disparities (NIMHD)" = "NIMHD",
             "National Institute of\n   Neurological Disorders and Stroke (NINDS)" = "NINDS",
             "National Institute of\n   Nursing Research (NINR)" = "NINR",
-            "National Library of Medicine (NLM)" = "NLM"
+            "National Library of Medicine (NLM)" = "NLM", 
+            "Office of the Director Common Fund (OD Common Fund)" = "OD Common Fund"
         )
     )
 }
@@ -48,7 +52,7 @@ institute_selector <- function(name_x, label_x, selected_x = "All") {
 
 award_selectize <- function(name_x = "k_awards",
                             label_x = NULL,
-                            selected_x = c("K01", "K08", "K23", "K99")) {
+                            selected_x = c("K01", "R01", "DP2", "K99")) {
     selectizeInput(
         multiple = TRUE, 
         inputId = name_x,
@@ -70,7 +74,26 @@ award_selectize <- function(name_x = "k_awards",
             "K43" = "K43",
             "K76" = "K76",
             "K99" = "K99",
-            "KL2" = "KL2"
+            "KL2" = "KL2",
+            "DP1" = "DP1", 
+            "DP2" = "DP2",
+            "DP3" = "DP3", 
+            "DP5" = "DP5",
+            "P01" = "P01", 
+            "R00" = "R00", 
+            "R01" = "R01", 
+            "R03" = "R03", 
+            "R15" = "R15", 
+            "R21" = "R21", 
+            "R33" = "R33", 
+            "R34" = "R34", 
+            "R35" = "R35", 
+            "R36" = "R36", 
+            "R37" = "R37", 
+            "R56" = "R56", 
+            "RF1" = "RF1",
+            "RM1" = "RM1", 
+            "SI2" = "SI2"
         ),
         selected = selected_x,
         options = list(maxItems = 4)
@@ -79,7 +102,7 @@ award_selectize <- function(name_x = "k_awards",
 
 award_selector <- function(name_x = "k_award",
                             label_x = NULL,
-                            selected_x = c("K99")) {
+                            selected_x = c("R01")) {
     selectInput(
         inputId = name_x,
         label = label_x,
@@ -100,7 +123,26 @@ award_selector <- function(name_x = "k_award",
             "K43" = "K43",
             "K76" = "K76",
             "K99" = "K99",
-            "KL2" = "KL2"
+            "KL2" = "KL2",
+            "DP1" = "DP1", 
+            "DP2" = "DP2",
+            "DP3" = "DP3", 
+            "DP5" = "DP5",
+            "P01" = "P01", 
+            "R00" = "R00", 
+            "R01" = "R01", 
+            "R03" = "R03", 
+            "R15" = "R15", 
+            "R21" = "R21", 
+            "R33" = "R33", 
+            "R34" = "R34", 
+            "R35" = "R35", 
+            "R36" = "R36", 
+            "R37" = "R37", 
+            "R56" = "R56", 
+            "RF1" = "RF1",
+            "RM1" = "RM1", 
+            "SI2" = "SI2"
         ),
         selected = selected_x
     )
@@ -108,7 +150,7 @@ award_selector <- function(name_x = "k_award",
 
 plot_apps_and_success <- function(
     k_awards_df,
-    k_types = c("K01", "K08", "K23", "K99"),
+    activity_codes = c("K01", "K08", "K23", "K99"),
     ics = "All",
     first_sub = FALSE
     ) {
@@ -122,7 +164,7 @@ plot_apps_and_success <- function(
     }
     
     x <- sub_df %>%
-        group_by(year, k_type, add = TRUE) %>%
+        group_by(year, activity_code, add = TRUE) %>%
         summarize(
             apps_received = sum(apps_received),
             apps_awarded = sum(apps_awarded),
@@ -131,10 +173,10 @@ plot_apps_and_success <- function(
         ) %>%
         mutate(success_rate = apps_awarded / apps_received * 100,
                success_rate_first = app_first_sub / apps_received * 100) %>%
-        filter(k_type %in% k_types)
+        filter(activity_code %in% activity_codes)
     
     p1 <- ggplot(x,
-                 aes(x = year, y = apps_received, color = k_type),
+                 aes(x = year, y = apps_received, color = activity_code),
                  clip = "off") +
         geom_line(size = .8, alpha = .9) +
         geom_point(size = 3.5, color = "white") +
@@ -144,27 +186,27 @@ plot_apps_and_success <- function(
             NULL,
             breaks = seq(2010, 2019, 3),
             expand = c(0, .1),
-            limits = c(2010, 2019.6)
+            limits = c(2010, 2021)
         ) +
         scale_y_continuous("Applications received (N)",
                            expand = c(0, 20)) +
         mk_nytimes(legend.position = "none") +
         geom_text_repel(
             data = x %>%
-                group_by(k_type) %>% 
+                group_by(activity_code) %>% 
                 filter(year == max(year)),
             aes(
                 x = year,
                 y = apps_received,
-                label = k_type,
-                color = k_type
+                label = activity_code,
+                color = activity_code
             ),
             nudge_x = .2,
             show.legend = FALSE
         )
     
     p2 <- ggplot(x,
-                 aes(x = year, y = success_rate_first, color = k_type),
+                 aes(x = year, y = success_rate_first, color = activity_code),
                  clip = "off") +
         geom_line(size = .8, alpha = .9) +
         geom_point(size = 3.5, color = "white") +
@@ -174,27 +216,27 @@ plot_apps_and_success <- function(
             NULL,
             breaks = seq(2010, 2019, 3),
             expand = c(0, .1),
-            limits = c(2010, 2019.6)
+            limits = c(2010, 2021)
         ) +
         scale_y_continuous("Success rate among initial submissions (%)",
                            expand = c(0, .1)) +
         mk_nytimes(legend.position = "none") +
         geom_text_repel(
             data = x %>%
-                group_by(k_type) %>% 
+                group_by(activity_code) %>% 
                 filter(year == max(year)),
             aes(
                 x = year,
                 y = success_rate_first,
-                label = k_type,
-                color = k_type
+                label = activity_code,
+                color = activity_code
             ),
             nudge_x = .2,
             show.legend = FALSE
         )
     
     p3 <- ggplot(x,
-                 aes(x = year, y = success_rate, color = k_type),
+                 aes(x = year, y = success_rate, color = activity_code),
                  clip = "off") +
         geom_line(size = .8, alpha = .9) +
         geom_point(size = 3.5, color = "white") +
@@ -204,19 +246,19 @@ plot_apps_and_success <- function(
             NULL,
             breaks = seq(2010, 2019, 3),
             expand = c(0, .1),
-            limits = c(2010, 2019.6)
+            limits = c(2010, 2021)
         ) +
         scale_y_continuous("Success rate (%)") +
         mk_nytimes(legend.position = "none") +
         geom_text_repel(
             data = x %>%
-                group_by(k_type) %>% 
+                group_by(activity_code) %>% 
                 filter(year == max(year)),
             aes(
                 x = year,
                 y = success_rate,
-                label = k_type,
-                color = k_type
+                label = activity_code,
+                color = activity_code
             ),
             nudge_x = .2,
             show.legend = FALSE
@@ -231,7 +273,7 @@ plot_apps_and_success <- function(
 
 
 plot_circles <- function(k_awards_df,
-                         k_type_x = "K99",
+                         activity_code_x = "K99",
                          highlight_institute = NA,
                          add_loess = TRUE,
                          first_sub = FALSE) {
@@ -256,7 +298,7 @@ plot_circles <- function(k_awards_df,
     
     p3 <- ggplot(
         k_awards_df %>%
-            filter(k_type == k_type_x),
+            filter(activity_code == activity_code_x),
         aes(
             x = year,
             y = y_target,
@@ -275,7 +317,7 @@ plot_circles <- function(k_awards_df,
             NULL,
             breaks = seq(2010, 2019, 3),
             expand = c(0, .1),
-            limits = c(2010, 2019.6)
+            limits = c(2010, 2021)
         ) +
         scale_size_area(
             "Applications received",
@@ -297,7 +339,7 @@ plot_circles <- function(k_awards_df,
         p3 <- p3 +
             geom_point(
                 data =   k_awards_df %>%
-                    filter(k_type == k_type_x,
+                    filter(activity_code == activity_code_x,
                            institute == highlight_institute),
                 aes(
                     x = year,
