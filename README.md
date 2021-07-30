@@ -3,6 +3,12 @@
 
 # `nih_success_rates`
 
+<p align="center">
+
+<img src="./fig1.jpg" width="750px" style="display: block; margin: auto;" />
+
+</p>
+
 Some quick exploratory looks at the [NIH Success Rates
 data](https://report.nih.gov/success_rates/) for early career awards
 (i.e,. “K-awards”) and major independent awards (e.g., R01, DP2, etc.)
