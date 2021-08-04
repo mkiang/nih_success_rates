@@ -81,7 +81,7 @@ server <- function(input, output) {
                               activity_codes = input$activity_codes,
                               ics = input$fig1ic,
                               first_sub = FALSE) # input$first_sub1)
-    }, cacheKeyExpr = list(input$activity_codes, FALSE)) # input$fig1ic,input$first_sub1))
+    }, cacheKeyExpr = list(input$activity_codes, input$fig1ic)) # , input$first_sub1))
     
     output$k_circles <- renderCachedPlot({
         plot_circles(k_df,
