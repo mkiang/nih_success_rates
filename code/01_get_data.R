@@ -4,10 +4,10 @@ library(readxl)
 
 ## Constants ----
 ## Get link to correct file: https://report.nih.gov/success_rates/
-T204_URL <- "https://report.nih.gov/catalog/DisplayReport.aspx?rId=551"
-T206_URL <- "https://report.nih.gov/catalog/DisplayReport.aspx?rId=565"
-SAVE_FILE_K <- "./data/T204 2020 CAREER DEV_Appls_Awds_Succ Rate_Fund by Act and IC_1.xlsx"
-SAVE_FILE_R <- "./data/T206 2020 RES PROJ GR_Appl_Awds_Succ Rate_Fund by Type_IC and Act.xlsx"
+T204_URL <- "https://report.nih.gov/reportweb/web/displayreport?rId=551"
+T206_URL <- "https://report.nih.gov/reportweb/web/displayreport?rId=565"
+SAVE_FILE_K <- "./data/T204 2022 CAREER DEV_Appls_Awds_Succ Rate_Fund by Act and IC.xlsx"
+SAVE_FILE_R <- "./data/T206 2022 RES PROJ GR_Appl_Awds_Succ Rate_Fund by Type_IC and Act v2.xlsx"
 
 ## Get data ----
 if (!file.exists(SAVE_FILE_K) | 
@@ -20,7 +20,7 @@ if (!file.exists(SAVE_FILE_K) |
 ## Read data for K awards ----
 k_awards <- readxl::read_xlsx(
     SAVE_FILE_K,
-    range = "A5:G1533",
+    range = "A5:G1507",
     col_names = c(
         "year",
         "activity_code",
@@ -68,7 +68,7 @@ k_awards <- k_awards %>%
 ## Read data for R awards ----
 r_awards <- readxl::read_xlsx(
     SAVE_FILE_R,
-    range = "A5:H4182",
+    range = "A5:H4329",
     col_names = c(
         "year",
         "competing_status", 

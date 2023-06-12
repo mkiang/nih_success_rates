@@ -172,7 +172,8 @@ plot_apps_and_success <- function(
             app_first_sub = sum(app_first_sub, na.rm = TRUE),
         ) %>%
         mutate(success_rate = apps_awarded / apps_received * 100,
-               success_rate_first = app_first_sub / apps_received * 100) %>%
+               success_rate_first = app_first_sub / apps_received * 100
+               ) %>%
         filter(activity_code %in% activity_codes)
     
     p1 <- ggplot(x,
@@ -184,9 +185,9 @@ plot_apps_and_success <- function(
         scale_colour_brewer("K-type", palette = "Dark2") +
         scale_x_continuous(
             NULL,
-            breaks = seq(2010, 2019, 3),
+            breaks = seq(2013, 2022, 3),
             expand = c(0, .1),
-            limits = c(2010, 2021)
+            limits = c(2013, 2022)
         ) +
         scale_y_continuous("Applications received (N)",
                            expand = c(0, 20)) +
@@ -214,9 +215,9 @@ plot_apps_and_success <- function(
         scale_colour_brewer("K-type", palette = "Dark2") +
         scale_x_continuous(
             NULL,
-            breaks = seq(2010, 2019, 3),
+            breaks = seq(2013, 2022, 3),
             expand = c(0, .1),
-            limits = c(2010, 2021)
+            limits = c(2013, 2022)
         ) +
         scale_y_continuous("Success rate among initial submissions (%)",
                            expand = c(0, .1)) +
@@ -244,9 +245,9 @@ plot_apps_and_success <- function(
         scale_colour_brewer("K-type", palette = "Dark2") +
         scale_x_continuous(
             NULL,
-            breaks = seq(2010, 2019, 3),
+            breaks = seq(2013, 2022, 3),
             expand = c(0, .1),
-            limits = c(2010, 2021)
+            limits = c(2013, 2022)
         ) +
         scale_y_continuous("Success rate (%)") +
         mk_nytimes(legend.position = "none") +
@@ -315,9 +316,9 @@ plot_circles <- function(k_awards_df,
         scale_color_viridis_d("Institute/Center") +
         scale_x_continuous(
             NULL,
-            breaks = seq(2010, 2019, 3),
+            breaks = seq(2013, 2022, 3),
             expand = c(0, .1),
-            limits = c(2010, 2021)
+            limits = c(2013, 2022)
         ) +
         scale_size_area(
             "Applications received",

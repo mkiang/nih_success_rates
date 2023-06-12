@@ -13,22 +13,22 @@ library(here)
 source(here("code", "utils.R"))
 source(here("code", "mk_nytimes.R"))
 k_df <- readRDS(here("data", "working_data.RDS"))
-first_sub <- read_csv(here("data", "first_submissions_all.csv")) %>% 
-    select(year = fy, 
+first_sub <- read_csv(here("data", "first_submissions_all.csv")) %>%
+    select(year = fy,
            activity_code = activity,
            app_first_sub = n_first_sub,
            institute)
 
 first_sub <- bind_rows(
     first_sub,
-    first_sub %>% 
-        group_by(year, activity_code) %>% 
+    first_sub %>%
+        group_by(year, activity_code) %>%
         summarize(app_first_sub = sum(app_first_sub)) %>%
         mutate(institute = "All")
 )
 
-k_df <- k_df %>% 
-    left_join(first_sub) %>% 
+k_df <- k_df %>%
+    left_join(first_sub) %>%
     mutate(success_rate_first = app_first_sub / apps_received * 100)
 
 # Define UI for application that draws a histogram
@@ -62,8 +62,8 @@ ui <- fluidPage(
                 name_x = "fig2ic",
                 label_x = "Institute/Center:",
                 selected_x = "NIDA"
-            ),
-            initial_sub_only(name_x = "first_sub2")
+            ) #,
+           # initial_sub_only(name_x = "first_sub2")
         ), 
         
         # Show a plot of the generated distribution
@@ -87,8 +87,8 @@ server <- function(input, output) {
         plot_circles(k_df,
                      activity_code_x = input$k_award,
                      highlight_institute = input$fig2ic,
-                     first_sub = input$first_sub2)
-    }, cacheKeyExpr = list(input$k_award, input$fig2ic, input$first_sub2))
+                     first_sub = FALSE) #input$first_sub2)
+    }, cacheKeyExpr = list(input$k_award, input$fig2ic)) # , input$first_sub2))
 }
 
 # Run the application 
